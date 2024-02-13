@@ -140,5 +140,10 @@ namespace Task_9.Controllers
                 semaphore.Release();
             }
         }
+
+        public int SumNum(int x, int y)
+        {
+            return x + y;
+        }
     }
 }

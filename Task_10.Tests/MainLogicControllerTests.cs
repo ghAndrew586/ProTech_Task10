@@ -1,16 +1,19 @@
+using Task_9.Controllers;
+
 namespace Task_10.Tests
 {
     public class MainLogicControllerTests
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
+        MainLogicController mainLogic = new MainLogicController();
 
-        [Test]
-        public void Test1()
+
+        [TestCase(5, 2, 7)]
+        [TestCase(10, 5, 15)]
+        public void SumNum_5plus2_7return(int x, int y, int result)
         {
-            Assert.Pass();
+            int actual = mainLogic.SumNum(x, y);
+
+            Assert.That(result, Is.EqualTo(actual));
         }
     }
 }
