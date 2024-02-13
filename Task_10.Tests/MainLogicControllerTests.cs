@@ -1,4 +1,5 @@
-using Task_9.Controllers;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using Task_10.Controllers;
 
 namespace Task_10.Tests
 {
@@ -6,13 +7,12 @@ namespace Task_10.Tests
     {
         MainLogicController mainLogic = new MainLogicController();
 
-
-        [TestCase(5, 2, 7)]
-        [TestCase(10, 5, 15)]
-        public void SumNum_5plus2_7return(int x, int y, int result)
+        [TestCase("a", "aa")]
+        [TestCase("abcdef", "cbafed")]
+        [TestCase("abcde", "edcbaabcde")]
+        public void LogicTask1_abcdef_cbafed_or_abcde_edcbaabcde(string mainLine, string result)
         {
-            int actual = mainLogic.SumNum(x, y);
-
+            string actual = mainLogic.LogicTask1(mainLine);
             Assert.That(result, Is.EqualTo(actual));
         }
     }

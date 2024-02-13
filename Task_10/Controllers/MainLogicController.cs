@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Tracing;
 using System.Net;
 using System.Text.RegularExpressions;
-using Task_9.Models;
-using Task_9.SortingAlgorithms;
+using Task_10.Models;
+using Task_10.SortingAlgorithms;
 
-namespace Task_9.Controllers
+namespace Task_10.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -55,27 +56,12 @@ namespace Task_9.Controllers
                     return BadRequest(badRequestLine);
                 }
 
+                
+
+                string resultLine = LogicTask1(inputLine);
+                resultData.ResultLine = resultLine;
+
                 char[] mainLine = inputLine.ToCharArray();
-
-                Array.Reverse(mainLine);
-                string resultLine;
-                if (mainLine.Length % 2 != 0)
-                {
-                    resultLine = new string(mainLine);
-                    Array.Reverse(mainLine);
-                    resultLine += new string(mainLine);
-
-                    resultData.ResultLine = resultLine;
-
-                }
-                else
-                {
-                    var lastSegment = new ArraySegment<char>(mainLine, 0, mainLine.Length / 2);
-                    var firstSegment = new ArraySegment<char>(mainLine, mainLine.Length / 2, mainLine.Length / 2);
-                    resultLine = String.Join("", firstSegment) + (String.Join("", lastSegment));
-                    resultData.ResultLine = resultLine;
-                    Array.Reverse(mainLine);
-                }
 
                 resultData.CharsAmounts = new Dictionary<char, int>();
                 foreach (char letter in mainLine)
@@ -140,10 +126,26 @@ namespace Task_9.Controllers
                 semaphore.Release();
             }
         }
-
-        public int SumNum(int x, int y)
+        [NonAction]
+        public string LogicTask1(string inputLine)
         {
-            return x + y;
+            string resultLine;
+            char[] mainLine = inputLine.ToCharArray();
+            Array.Reverse(mainLine);
+            if (mainLine.Length % 2 != 0)
+            {
+                resultLine = new string(mainLine);
+                Array.Reverse(mainLine);
+                resultLine += new string(mainLine);
+
+            }
+            else
+            {
+                var lastSegment = new ArraySegment<char>(mainLine, 0, mainLine.Length / 2);
+                var firstSegment = new ArraySegment<char>(mainLine, mainLine.Length / 2, mainLine.Length / 2);
+                resultLine = String.Join("", firstSegment) + (String.Join("", lastSegment));
+            }
+            return resultLine;
         }
     }
 }

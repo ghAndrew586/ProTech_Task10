@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Task_9.SortingAlgorithms
+namespace Task_10.SortingAlgorithms
 {
     //From the internet
     public class TreeNode
