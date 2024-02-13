@@ -56,13 +56,9 @@ namespace Task_10.Controllers
                 string resultLine = LogicTask1(inputLine);
                 resultData.ResultLine = resultLine;
 
-                char[] mainLine = inputLine.ToCharArray();
 
-                resultData.CharsAmounts = new Dictionary<char, int>();
-                foreach (char letter in mainLine)
-                {
-                    resultData.CharsAmounts[letter] = resultLine.Count(lt => lt == letter);
-                }
+                resultData.CharsAmounts = LogicTask3(resultLine);
+                
 
                 string maxLine = "";
 
@@ -161,6 +157,17 @@ namespace Task_10.Controllers
                 };
             }
             return null;
+        }
+
+        [NonAction]
+        public Dictionary<char, int> LogicTask3(string resultLine)
+        {
+            Dictionary<char, int> resultDict = new Dictionary<char, int>();
+            foreach (char letter in resultLine)
+            {
+                resultDict[letter] = resultLine.Count(lt => lt == letter);
+            }
+            return resultDict;
         }
     }
 }
