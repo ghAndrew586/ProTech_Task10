@@ -32,20 +32,6 @@ namespace Task_10.Controllers
                 //Checking concurrent requests
                 //Thread.Sleep(5000);
 
-                if (!Regex.IsMatch(inputLine, "^[a-z]+$"))
-                {
-                    if (Regex.Replace(inputLine, " ", "") != "")
-                    {
-                        badRequestLine = "В строке должны быть только латинские буквы в нижнем регистре! Неподходящие символы: " +
-                            Regex.Replace(Regex.Replace(inputLine, "[a-z]", ""), " ", " 'Пробел' ");
-                    }
-                    else
-                    {
-                        badRequestLine = "Строка не должна быть пустой!";
-                    }
-                    return BadRequest(badRequestLine);
-                }
-
                 if (jsonConfig.GetSection("Settings:BlackList").Get<string[]>().Any(str => str == inputLine))
                 {
                     badRequestLine = $"'{inputLine}' находится в черном списке: ";
@@ -57,6 +43,15 @@ namespace Task_10.Controllers
                 }
 
                 
+
+                badRequestLine = LogicTask2(inputLine);
+
+                if (badRequestLine != null)
+                {
+                    return BadRequest("В строке должны быть только латинские буквы в нижнем регистре! Неподходящие символы: "
+                        + badRequestLine);
+                }
+
 
                 string resultLine = LogicTask1(inputLine);
                 resultData.ResultLine = resultLine;
@@ -130,8 +125,10 @@ namespace Task_10.Controllers
         public string LogicTask1(string inputLine)
         {
             string resultLine;
+
             char[] mainLine = inputLine.ToCharArray();
             Array.Reverse(mainLine);
+
             if (mainLine.Length % 2 != 0)
             {
                 resultLine = new string(mainLine);
@@ -145,7 +142,25 @@ namespace Task_10.Controllers
                 var firstSegment = new ArraySegment<char>(mainLine, mainLine.Length / 2, mainLine.Length / 2);
                 resultLine = String.Join("", firstSegment) + (String.Join("", lastSegment));
             }
+
             return resultLine;
+        }
+
+        [NonAction]
+        public string LogicTask2(string inputLine)
+        {
+            if (!Regex.IsMatch(inputLine, "^[a-z]+$"))
+            {
+                if (Regex.Replace(inputLine, " ", "") != "")
+                {
+                    return Regex.Replace(Regex.Replace(inputLine, "[a-z]", ""), " ", " 'Пробел' ");
+                }
+                else
+                {
+                    return "";
+                };
+            }
+            return null;
         }
     }
 }
