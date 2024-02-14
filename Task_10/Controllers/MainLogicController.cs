@@ -60,17 +60,9 @@ namespace Task_10.Controllers
                 resultData.CharsAmounts = LogicTask3(resultLine);
                 
 
-                string maxLine = "";
+                
 
-                foreach (Match match in Regex.Matches(resultLine, "[aeiouy].*[aeiouy]"))
-                {
-                    if (maxLine.Length < match.Value.Length)
-                    {
-                        maxLine = match.Value;
-                    }
-                }
-
-                resultData.LongSubline = maxLine;
+                resultData.LongSubline = LogicTask4(resultLine);
 
                 if (sortOption != 1 && sortOption != 2)
                 {
@@ -168,6 +160,22 @@ namespace Task_10.Controllers
                 resultDict[letter] = resultLine.Count(lt => lt == letter);
             }
             return resultDict;
+        }
+
+        [NonAction]
+        public string LogicTask4(string resultLine)
+        {
+            string maxLine = "";
+
+            foreach (Match match in Regex.Matches(resultLine, "[aeiouy].*[aeiouy]"))
+            {
+                if (maxLine.Length < match.Value.Length)
+                {
+                    maxLine = match.Value;
+                }
+            }
+
+            return maxLine;
         }
     }
 }

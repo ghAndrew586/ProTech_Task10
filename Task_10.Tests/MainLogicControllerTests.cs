@@ -36,5 +36,14 @@ namespace Task_10.Tests
             Dictionary<char, int> actual = mainLogic.LogicTask3(inputLine);
             Assert.That(result, Is.EqualTo(actual));
         }
+
+        [TestCase("aa", "aa")]
+        [TestCase("cbafed", "afe")]
+        [TestCase("edcbaabcde", "edcbaabcde")]
+        public void LogicTask4_abcdef_afe(string inputLine, string result)
+        {
+            string actual = mainLogic.LogicTask4(inputLine);
+            Assert.That(result, Is.EqualTo(actual));
+        }
     }
 }
