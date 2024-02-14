@@ -45,5 +45,18 @@ namespace Task_10.Tests
             string actual = mainLogic.LogicTask4(inputLine);
             Assert.That(result, Is.EqualTo(actual));
         }
+
+        [TestCase("bcda", 1)]
+        [TestCase("bcda", 2)]
+        [TestCase("fedabc", 1)]
+        [TestCase("fedabc", 2)]
+        public void LogicTask4_bcda_abcd(string inputLine, int sortOption)
+        {
+            string actual = mainLogic.LogicTask5(inputLine, sortOption);
+            char[] result = inputLine.ToCharArray();
+            Array.Sort(result);
+
+            Assert.That(new string(result), Is.EqualTo(actual));
+        }
     }
 }

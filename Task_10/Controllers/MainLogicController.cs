@@ -42,8 +42,6 @@ namespace Task_10.Controllers
                     return BadRequest(badRequestLine);
                 }
 
-                
-
                 badRequestLine = LogicTask2(inputLine);
 
                 if (badRequestLine != null)
@@ -52,15 +50,10 @@ namespace Task_10.Controllers
                         + badRequestLine);
                 }
 
-
                 string resultLine = LogicTask1(inputLine);
                 resultData.ResultLine = resultLine;
 
-
                 resultData.CharsAmounts = LogicTask3(resultLine);
-                
-
-                
 
                 resultData.LongSubline = LogicTask4(resultLine);
 
@@ -69,19 +62,8 @@ namespace Task_10.Controllers
                     return BadRequest("1 - quick sort; 2 - tree sort!");
                 }
 
-                char[] resultLineChars = resultLine.ToCharArray();
 
-                Quicksort quicksort = new Quicksort();
-                Treesort treesort = new Treesort();
-
-                if (sortOption == 1)
-                {
-                    resultData.SortResultLine = new string(quicksort.QuicksortLogic(resultLineChars, 0, resultLineChars.Length - 1));
-                }
-                else if (sortOption == 1)
-                {
-                    resultData.SortResultLine = new string(treesort.TreeSort(resultLineChars));
-                }
+                resultData.SortResultLine = LogicTask5(resultLine, sortOption);
 
                 int delIndex;
                 try
@@ -176,6 +158,24 @@ namespace Task_10.Controllers
             }
 
             return maxLine;
+        }
+
+        [NonAction]
+        public string LogicTask5(string resultLine, int sortOption)
+        {
+            Quicksort quicksort = new Quicksort();
+            Treesort treesort = new Treesort();
+
+            char[] resultLineChars = resultLine.ToCharArray();
+
+            if (sortOption == 1)
+            {
+                return new string(quicksort.QuicksortLogic(resultLineChars, 0, resultLineChars.Length - 1));
+            }
+            else
+            {
+                return new string(treesort.TreeSort(resultLineChars));
+            }
         }
     }
 }
