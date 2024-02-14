@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Tracing;
 using System.Net;
 using System.Text.RegularExpressions;
-using Task_9.Models;
-using Task_9.SortingAlgorithms;
+using Task_10.Models;
+using Task_10.SortingAlgorithms;
 
-namespace Task_9.Controllers
+namespace Task_10.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -28,22 +29,7 @@ namespace Task_9.Controllers
 
                 ResultData resultData = new ResultData();
 
-                //Checking concurrent requests
                 //Thread.Sleep(5000);
-
-                if (!Regex.IsMatch(inputLine, "^[a-z]+$"))
-                {
-                    if (Regex.Replace(inputLine, " ", "") != "")
-                    {
-                        badRequestLine = "В строке должны быть только латинские буквы в нижнем регистре! Неподходящие символы: " +
-                            Regex.Replace(Regex.Replace(inputLine, "[a-z]", ""), " ", " 'Пробел' ");
-                    }
-                    else
-                    {
-                        badRequestLine = "Строка не должна быть пустой!";
-                    }
-                    return BadRequest(badRequestLine);
-                }
 
                 if (jsonConfig.GetSection("Settings:BlackList").Get<string[]>().Any(str => str == inputLine))
                 {
@@ -55,64 +41,27 @@ namespace Task_9.Controllers
                     return BadRequest(badRequestLine);
                 }
 
-                char[] mainLine = inputLine.ToCharArray();
+                badRequestLine = LogicTask2(inputLine);
 
-                Array.Reverse(mainLine);
-                string resultLine;
-                if (mainLine.Length % 2 != 0)
+                if (badRequestLine != null)
                 {
-                    resultLine = new string(mainLine);
-                    Array.Reverse(mainLine);
-                    resultLine += new string(mainLine);
-
-                    resultData.ResultLine = resultLine;
-
-                }
-                else
-                {
-                    var lastSegment = new ArraySegment<char>(mainLine, 0, mainLine.Length / 2);
-                    var firstSegment = new ArraySegment<char>(mainLine, mainLine.Length / 2, mainLine.Length / 2);
-                    resultLine = String.Join("", firstSegment) + (String.Join("", lastSegment));
-                    resultData.ResultLine = resultLine;
-                    Array.Reverse(mainLine);
+                    return BadRequest("В строке должны быть только латинские буквы в нижнем регистре! Неподходящие символы: "
+                        + badRequestLine);
                 }
 
-                resultData.CharsAmounts = new Dictionary<char, int>();
-                foreach (char letter in mainLine)
-                {
-                    resultData.CharsAmounts[letter] = resultLine.Count(lt => lt == letter);
-                }
+                string resultLine = LogicTask1(inputLine);
+                resultData.ResultLine = resultLine;
 
-                string maxLine = "";
+                resultData.CharsAmounts = LogicTask3(resultLine);
 
-                foreach (Match match in Regex.Matches(resultLine, "[aeiouy].*[aeiouy]"))
-                {
-                    if (maxLine.Length < match.Value.Length)
-                    {
-                        maxLine = match.Value;
-                    }
-                }
-
-                resultData.LongSubline = maxLine;
+                resultData.LongSubline = LogicTask4(resultLine);
 
                 if (sortOption != 1 && sortOption != 2)
                 {
                     return BadRequest("1 - quick sort; 2 - tree sort!");
                 }
 
-                char[] resultLineChars = resultLine.ToCharArray();
-
-                Quicksort quicksort = new Quicksort();
-                Treesort treesort = new Treesort();
-
-                if (sortOption == 1)
-                {
-                    resultData.SortResultLine = new string(quicksort.QuicksortLogic(resultLineChars, 0, resultLineChars.Length - 1));
-                }
-                else if (sortOption == 1)
-                {
-                    resultData.SortResultLine = new string(treesort.TreeSort(resultLineChars));
-                }
+                resultData.SortResultLine = LogicTask5(resultLine, sortOption);
 
                 int delIndex;
                 try
@@ -138,6 +87,92 @@ namespace Task_9.Controllers
             finally 
             {
                 semaphore.Release();
+            }
+        }
+        [NonAction]
+        public string LogicTask1(string inputLine)
+        {
+            string resultLine;
+
+            char[] mainLine = inputLine.ToCharArray();
+            Array.Reverse(mainLine);
+
+            if (mainLine.Length % 2 != 0)
+            {
+                resultLine = new string(mainLine);
+                Array.Reverse(mainLine);
+                resultLine += new string(mainLine);
+
+            }
+            else
+            {
+                var lastSegment = new ArraySegment<char>(mainLine, 0, mainLine.Length / 2);
+                var firstSegment = new ArraySegment<char>(mainLine, mainLine.Length / 2, mainLine.Length / 2);
+                resultLine = String.Join("", firstSegment) + (String.Join("", lastSegment));
+            }
+
+            return resultLine;
+        }
+
+        [NonAction]
+        public string LogicTask2(string inputLine)
+        {
+            if (!Regex.IsMatch(inputLine, "^[a-z]+$"))
+            {
+                if (Regex.Replace(inputLine, " ", "") != "")
+                {
+                    return Regex.Replace(Regex.Replace(inputLine, "[a-z]", ""), " ", " 'Пробел' ");
+                }
+                else
+                {
+                    return "";
+                };
+            }
+            return null;
+        }
+
+        [NonAction]
+        public Dictionary<char, int> LogicTask3(string resultLine)
+        {
+            Dictionary<char, int> resultDict = new Dictionary<char, int>();
+            foreach (char letter in resultLine)
+            {
+                resultDict[letter] = resultLine.Count(lt => lt == letter);
+            }
+            return resultDict;
+        }
+
+        [NonAction]
+        public string LogicTask4(string resultLine)
+        {
+            string maxLine = "";
+
+            foreach (Match match in Regex.Matches(resultLine, "[aeiouy].*[aeiouy]"))
+            {
+                if (maxLine.Length < match.Value.Length)
+                {
+                    maxLine = match.Value;
+                }
+            }
+
+            return maxLine;
+        }
+
+        [NonAction]
+        public string LogicTask5(string resultLine, int sortOption)
+        {
+            Quicksort quicksort = new Quicksort();
+            Treesort treesort = new Treesort();
+
+            char[] resultLineChars = resultLine.ToCharArray();
+
+            if (sortOption == 1)
+            {
+                return new string(quicksort.QuicksortLogic(resultLineChars, 0, resultLineChars.Length - 1));
+            }
+            else
+            {
+                return new string(treesort.TreeSort(resultLineChars));
             }
         }
     }

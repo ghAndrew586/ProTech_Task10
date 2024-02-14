@@ -1,4 +1,4 @@
-﻿namespace Task_9.SortingAlgorithms
+﻿namespace Task_10.SortingAlgorithms
 {
     //From the internet
     class Quicksort
