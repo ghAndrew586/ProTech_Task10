@@ -29,7 +29,6 @@ namespace Task_10.Controllers
 
                 ResultData resultData = new ResultData();
 
-                //Checking concurrent requests
                 //Thread.Sleep(5000);
 
                 if (jsonConfig.GetSection("Settings:BlackList").Get<string[]>().Any(str => str == inputLine))
@@ -61,7 +60,6 @@ namespace Task_10.Controllers
                 {
                     return BadRequest("1 - quick sort; 2 - tree sort!");
                 }
-
 
                 resultData.SortResultLine = LogicTask5(resultLine, sortOption);
 
